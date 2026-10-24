@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "current_feature": "project-skeleton",
+  "features": [
+    {
+      "id": "project-skeleton",
+      "title": "Project Skeleton with FastAPI/React",
+      "status": "done",
+      "acceptance": [
+        "FastAPI backend with SQLite runs locally",
+        "React + TypeScript + Vite frontend builds",
+        "Dockerfiles and docker-compose.yml work",
+        "Basic health check endpoint responds",
+        "Frontend loads and shows app name"
+      ],
+      "implementation": [
+        "backend/app/main.py",
+        "backend/app/core/config.py",
+        "backend/app/core/database.py",
+        "backend/app/models/agent_task.py",
+        "backend/app/api/health.py",
+        "backend/app/api/agents.py",
+        "backend/app/api/tasks.py",
+        "backend/app/api/schemas.py",
+        "backend/requirements.txt",
+        "backend/Dockerfile",
+        "frontend/package.json",
+        "frontend/vite.config.ts",
+        "frontend/tsconfig.json",
+        "frontend/tsconfig.node.json",
+        "frontend/index.html",
+        "frontend/src/main.tsx",
+        "frontend/src/App.tsx",
+        "frontend/src/index.css",
+        "frontend/src/components/Layout.tsx",
+        "frontend/src/components/Layout.css",
+        "frontend/src/pages/Dashboard.tsx",
+        "frontend/src/pages/Dashboard.css",
+        "frontend/src/pages/Agents.tsx",
+        "frontend/src/pages/Agents.css",
+        "frontend/src/pages/Tasks.tsx",
+        "frontend/src/pages/Tasks.css",
+        "frontend/src/api/client.ts",
+        "frontend/src/api/index.ts",
+        "frontend/src/types/index.ts",
+        "frontend/nginx.conf",
+        "frontend/Dockerfile",
+        "docker-compose.yml",
+        ".env.example",
+        ".gitignore",
+        "README.md",
+        "LICENSE",
+        "CHANGELOG.md",
+        "portfolio.json"
+      ],
+      "tests": [
+        "backend/app/tests/test_api.py",
+        "frontend/vitest.config.ts",
+        "frontend/src/test/setup.ts",
+        "frontend/src/App.test.tsx"
+      ]
+    },
+    {
+      "id": "agent-task-core",
+      "title": "Agent Task Management Core",
+      "status": "done",
+      "acceptance": [
+        "CRUD API for agents and tasks with persistence",
+        "Agent heartbeat endpoint for work polling",
+        "Task assignment to agents with status transitions",
+        "Frontend dashboard showing agents, tasks, and assignments"
+      ],
+      "implementation": [
+        "backend/app/models/agent_task.py",
+        "backend/app/api/agents.py",
+        "backend/app/api/tasks.py",
+        "backend/app/api/schemas.py",
+        "frontend/src/pages/Dashboard.tsx",
+        "frontend/src/pages/Agents.tsx",
+        "frontend/src/pages/Tasks.tsx"
+      ],
+      "tests": [
+        "backend/app/tests/test_api.py"
+      ]
+    },
+    {
+      "id": "org-chart-governance",
+      "title": "Org Chart & Governance",
+      "status": "planned",
+      "acceptance": [
+        "Hierarchical agent org chart with roles",
+        "Approval gates for task completion",
+        "Budget tracking per agent/project"
+      ],
+      "implementation": [],
+      "tests": []
+    },
+    {
+      "id": "skills-training",
+      "title": "Skills & Training Studio",
+      "status": "planned",
+      "acceptance": [
+        "Shared skill library with versioning",
+        "Skill testing with saved inputs",
+        "Agent skill assignment"
+      ],
+      "implementation": [],
+      "tests": []
+    },
+    {
+      "id": "oidc-auth",
+      "title": "OIDC/Keycloak Authentication",
+      "status": "planned",
+      "acceptance": [
+        "Keycloak integration with PKCE flow",
+        "Role-based access control (viewer/operator/admin)",
+        "Protected API endpoints"
+      ],
+      "implementation": [],
+      "tests": []
+    },
+    {
+      "id": "llm-adapters",
+      "title": "LLM Provider Adapters",
+      "status": "planned",
+      "acceptance": [
+        "OpenAI-compatible, Anthropic, Gemini, Ollama adapters",
+        "Configurable provider/model/endpoint",
+        "Advisory explanations grounded in records"
+      ],
+      "implementation": [],
+      "tests": []
+    },
+    {
+      "id": "routines-scheduling",
+      "title": "Routines & Scheduling",
+      "status": "planned",
+      "acceptance": [
+        "Scheduled recurring tasks",
+        "Webhook/API trigger support",
+        "Run history and audit trail"
+      ],
+      "implementation": [],
+      "tests": []
+    },
+    {
+      "id": "packaging-docs",
+      "title": "Packaging, Docs & CI",
+      "status": "planned",
+      "acceptance": [
+        "Complete README with Mermaid diagram",
+        "CHANGELOG, LICENSE, portfolio.json",
+        "GitHub Actions CI workflow",
+        "Docker healthchecks"
+      ],
+      "implementation": [
+        "README.md",
+        "LICENSE",
+        "CHANGELOG.md",
+        "portfolio.json",
+        "backend/Dockerfile",
+        "frontend/Dockerfile",
+        "docker-compose.yml"
+      ],
+      "tests": []
+    }
+  ]
+}

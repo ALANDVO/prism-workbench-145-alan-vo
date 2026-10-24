@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "name": "prism-workbench-145-alan-vo",
+  "owner": "ALANDVO",
+  "email": "alanvo@gmail.com",
+  "domain": "AI/ML developer tools",
+  "summary": "Work in progress: prism-workbench-145-alan-vo",
+  "workflows": [
+    "Create and manage hierarchical agent organizations with roles and budgets",
+    "Assign tasks to agents with atomic checkout and status workflow",
+    "Monitor agent heartbeats and track costs with budget enforcement"
+  ],
+  "auth": "oidc-keycloak-saml-broker",
+  "llm_providers": [
+    "openai-compatible",
+    "anthropic",
+    "gemini",
+    "ollama"
+  ],
+  "status": "work-in-progress"
+}
