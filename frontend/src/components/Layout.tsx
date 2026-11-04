@@ -1,9 +1,14 @@
-import { Outlet, NavLink, useLocation } from 'react-router-dom'
+import { Outlet, NavLink } from 'react-router-dom'
 import { useState } from 'react'
+import type { ReactNode } from 'react'
 import './Layout.css'
 
-export default function Layout() {
-  const location = useLocation()
+interface LayoutProps {
+  children?: ReactNode
+}
+
+export default function Layout({ children }: LayoutProps) {
+  
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const navItems = [
@@ -41,7 +46,7 @@ export default function Layout() {
           </nav>
         </aside>
         <main className="main-content">
-          <Outlet />
+          {children ?? <Outlet />}
         </main>
       </div>
       {sidebarOpen && <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />}

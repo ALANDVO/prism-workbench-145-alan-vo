@@ -1,3 +1,10 @@
+from datetime import datetime
+from typing import Optional, List
+from pydantic import BaseModel, Field
+
+from app.models.agent_task import AgentStatus, TaskStatus
+
+
 class AgentBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=255)
     role: str = Field(..., min_length=1, max_length=100)
@@ -6,9 +13,12 @@ class AgentBase(BaseModel):
     model_name: Optional[str] = None
     budget_limit: int = Field(default=0, ge=0)
     parent_id: Optional[int] = None
+    status: Optional[AgentStatus] = None
+
 
 class AgentCreate(AgentBase):
     pass
+
 
 class AgentUpdate(BaseModel):
     name: Optional[str] = Field(None, min_length=1, max_length=255)
@@ -19,6 +29,8 @@ class AgentUpdate(BaseModel):
     model_name: Optional[str] = None
     budget_limit: Optional[int] = Field(None, ge=0)
     parent_id: Optional[int] = None
+    status: Optional[AgentStatus] = None
+
 
 class AgentResponse(AgentBase):
     id: int
@@ -30,6 +42,7 @@ class AgentResponse(AgentBase):
     class Config:
         from_attributes = True
 
+
 class TaskBase(BaseModel):
     title: str = Field(..., min_length=1, max_length=255)
     description: Optional[str] = None
@@ -37,8 +50,10 @@ class TaskBase(BaseModel):
     budget_limit: int = Field(default=0, ge=0)
     parent_task_id: Optional[int] = None
 
+
 class TaskCreate(TaskBase):
     pass
+
 
 class TaskUpdate(BaseModel):
     title: Optional[str] = Field(None, min_length=1, max_length=255)
@@ -48,6 +63,7 @@ class TaskUpdate(BaseModel):
     assignee_id: Optional[int] = None
     budget_limit: Optional[int] = Field(None, ge=0)
     parent_task_id: Optional[int] = None
+
 
 class TaskResponse(TaskBase):
     id: int
@@ -62,11 +78,14 @@ class TaskResponse(TaskBase):
     class Config:
         from_attributes = True
 
+
 class TaskCommentBase(BaseModel):
     content: str = Field(..., min_length=1)
 
+
 class TaskCommentCreate(TaskCommentBase):
     pass
+
 
 class TaskCommentResponse(TaskCommentBase):
     id: int
@@ -77,8 +96,10 @@ class TaskCommentResponse(TaskCommentBase):
     class Config:
         from_attributes = True
 
+
 class HeartbeatRequest(BaseModel):
     agent_id: int
+
 
 class HeartbeatResponse(BaseModel):
     task: Optional[TaskResponse] = None

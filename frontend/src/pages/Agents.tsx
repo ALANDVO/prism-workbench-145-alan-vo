@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { agentsApi } from '../api'
-import type { Agent, AgentCreate, AgentUpdate, AgentStatus } from '../types'
+import type { Agent, AgentCreate, AgentStatus } from '../types'
 import './Agents.css'
 
 export default function Agents() {
