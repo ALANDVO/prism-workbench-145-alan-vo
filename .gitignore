@@ -42,3 +42,14 @@ htmlcov/
 
 # Local demo database
 prism.db
+.turbo/
+**/data/media/
+venv/
+*.pyc
+*.db-wal
+*.db-shm
+*.sqlite-wal
+*.sqlite-shm
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm

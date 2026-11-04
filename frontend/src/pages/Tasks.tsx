@@ -7,6 +7,7 @@ export default function Tasks() {
   const [tasks, setTasks] = useState<Task[]>([])
   const [agents, setAgents] = useState<Agent[]>([])
   const [loading, setLoading] = useState(true)
+  const [filterAssigneeId, setFilterAssigneeId] = useState<number | undefined>(undefined)
   const [error, setError] = useState<string | null>(null)
   const [showForm, setShowForm] = useState(false)
   const [editingTask, setEditingTask] = useState<Task | null>(null)
@@ -35,12 +36,12 @@ export default function Tasks() {
 
   useEffect(() => {
     fetchData()
-  }, [])
+  }, [filterAssigneeId])
 
   async function fetchData() {
     try {
       const [tasksRes, agentsRes] = await Promise.all([
-        tasksApi.list({ limit: 100 }),
+        tasksApi.list({ limit: 100, assignee_id: filterAssigneeId }),
         agentsApi.list({ limit: 100 }),
       ])
       setTasks(tasksRes.data)
@@ -129,6 +130,23 @@ export default function Tasks() {
     <div className="page tasks-page">
       <header className="page-header">
         <h2>Tasks</h2>
+        <div className="header-filters">
+          <select
+            value={filterAssigneeId || ""}
+            onChange={(e) => setFilterAssigneeId(e.target.value ? parseInt(e.target.value) : undefined)}
+            className="filter-select"
+          >
+            <option value="">All Agents</option>
+            {agents.filter(a => a.status === "active").map((agent) => (
+              <option key={agent.id} value={agent.id}>{agent.name} ({agent.role})</option>
+            ))}
+          </select>
+          {filterAssigneeId && (
+            <button className="btn btn-sm btn-secondary" onClick={() => setFilterAssigneeId(undefined)}>
+              Clear Filter
+            </button>
+          )}
+        </div>
         <button className="btn btn-primary" onClick={() => { setEditingTask(null); resetForm(); setShowForm(true); }}>
           + New Task
         </button>
