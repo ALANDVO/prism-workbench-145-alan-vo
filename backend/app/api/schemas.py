@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional, List
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 from app.models.agent_task import AgentStatus, TaskStatus
 
@@ -14,6 +14,8 @@ class AgentBase(BaseModel):
     budget_limit: int = Field(default=0, ge=0)
     parent_id: Optional[int] = None
     status: Optional[AgentStatus] = None
+
+    model_config = ConfigDict(protected_namespaces=())
 
 
 class AgentCreate(AgentBase):
@@ -29,7 +31,8 @@ class AgentUpdate(BaseModel):
     model_name: Optional[str] = None
     budget_limit: Optional[int] = Field(None, ge=0)
     parent_id: Optional[int] = None
-    status: Optional[AgentStatus] = None
+
+    model_config = ConfigDict(protected_namespaces=())
 
 
 class AgentResponse(AgentBase):
@@ -39,8 +42,7 @@ class AgentResponse(AgentBase):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True, protected_namespaces=())
 
 
 class TaskBase(BaseModel):
@@ -49,6 +51,8 @@ class TaskBase(BaseModel):
     priority: int = Field(default=0, ge=0)
     budget_limit: int = Field(default=0, ge=0)
     parent_task_id: Optional[int] = None
+
+    model_config = ConfigDict(protected_namespaces=())
 
 
 class TaskCreate(TaskBase):
@@ -64,6 +68,8 @@ class TaskUpdate(BaseModel):
     budget_limit: Optional[int] = Field(None, ge=0)
     parent_task_id: Optional[int] = None
 
+    model_config = ConfigDict(protected_namespaces=())
+
 
 class TaskResponse(TaskBase):
     id: int
@@ -75,12 +81,13 @@ class TaskResponse(TaskBase):
     updated_at: datetime
     completed_at: Optional[datetime]
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True, protected_namespaces=())
 
 
 class TaskCommentBase(BaseModel):
     content: str = Field(..., min_length=1)
+
+    model_config = ConfigDict(protected_namespaces=())
 
 
 class TaskCommentCreate(TaskCommentBase):
@@ -93,14 +100,17 @@ class TaskCommentResponse(TaskCommentBase):
     agent_id: int
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True, protected_namespaces=())
 
 
 class HeartbeatRequest(BaseModel):
     agent_id: int
 
+    model_config = ConfigDict(protected_namespaces=())
+
 
 class HeartbeatResponse(BaseModel):
     task: Optional[TaskResponse] = None
     message: str = "no_work"
+
+    model_config = ConfigDict(protected_namespaces=())

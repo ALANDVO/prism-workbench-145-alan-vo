@@ -1,8 +1,17 @@
 # Changelog
 
+## 1.2.0 — work-in-progress checkpoint
+
+Partial code published for continued development. Known issues: STATUS.md.
+
 ## 1.1.0 — work-in-progress checkpoint
 
 Partial code published for continued development. Known issues: STATUS.md.
+
+### Fixed
+- Pydantic V2 deprecation warnings: replaced class Config with model_config = ConfigDict(from_attributes=True, protected_namespaces=())
+- datetime.utcnow() deprecation: replaced with timezone-aware datetime.now(timezone.utc) via utcnow() helper
+- Unused import in frontend test setup
 
 ## 1.0.0 — work-in-progress checkpoint
 
