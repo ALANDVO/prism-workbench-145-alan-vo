@@ -155,3 +155,7 @@ PYTHONPATH=. .venv/bin/python -m pytest tests/ -v
 ---
 
 **Alan Vo** | alanvo@gmail.com
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

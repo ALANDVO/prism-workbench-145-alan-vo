@@ -108,3 +108,6 @@ Acceptance:
 
 Implementation: `README.md`, `LICENSE`, `CHANGELOG.md`, `portfolio.json`, `backend/Dockerfile`, `frontend/Dockerfile`, `docker-compose.yml`
 
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)
