@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "current_feature": "project-skeleton",
+  "current_feature": "deprecation-fixes",
   "features": [
     {
       "id": "project-skeleton",
@@ -41,17 +41,8 @@
         "frontend/src/pages/Tasks.tsx",
         "frontend/src/pages/Tasks.css",
         "frontend/src/api/client.ts",
-        "frontend/src/api/index.ts",
-        "frontend/src/types/index.ts",
-        "frontend/nginx.conf",
-        "frontend/Dockerfile",
-        "docker-compose.yml",
-        ".env.example",
-        ".gitignore",
-        "README.md",
-        "LICENSE",
-        "CHANGELOG.md",
-        "portfolio.json"
+        "frontend/src/test/setup.ts",
+        "frontend/src/App.test.tsx"
       ],
       "tests": [
         "backend/app/tests/test_api.py",
@@ -81,6 +72,27 @@
       ],
       "tests": [
         "backend/app/tests/test_api.py"
+      ]
+    },
+    {
+      "id": "deprecation-fixes",
+      "title": "Fix Pydantic V2 and datetime deprecation warnings",
+      "status": "done",
+      "acceptance": [
+        "Pydantic V2 ConfigDict replaces deprecated class Config",
+        "protected_namespaces=() suppresses model_ field warnings",
+        "datetime.utcnow() replaced with timezone-aware datetime.now(timezone.utc)",
+        "All backend tests pass without deprecation warnings"
+      ],
+      "implementation": [
+        "backend/app/api/schemas.py",
+        "backend/app/models/agent_task.py",
+        "backend/app/api/tasks.py",
+        "frontend/src/test/setup.ts"
+      ],
+      "tests": [
+        "backend/app/tests/test_api.py",
+        "frontend/src/App.test.tsx"
       ]
     },
     {

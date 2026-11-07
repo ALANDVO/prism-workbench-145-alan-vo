@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
@@ -11,6 +12,10 @@ from app.api.schemas import (
 )
 
 router = APIRouter(prefix="/tasks", tags=["tasks"])
+
+
+def utcnow():
+    return datetime.now(timezone.utc)
 
 
 @router.get("", response_model=List[TaskResponse])
@@ -55,8 +60,7 @@ def update_task(task_id: int, task_in: TaskUpdate, db: Session = Depends(get_db)
     for field, value in update_data.items():
         setattr(task, field, value)
     if task.status == TaskStatus.COMPLETED and not task.completed_at:
-        from datetime import datetime
-        task.completed_at = datetime.utcnow()
+        task.completed_at = utcnow()
     db.commit()
     db.refresh(task)
     return task

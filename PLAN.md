@@ -4,7 +4,7 @@ Each round completes one feature or repair. Future items are planned, not implem
 
 ## Current round
 
-project-skeleton
+deprecation-fixes
 
 ## Roadmap
 
@@ -19,7 +19,7 @@ Acceptance:
 - Basic health check endpoint responds
 - Frontend loads and shows app name
 
-Implementation: `backend/app/main.py`, `backend/app/core/config.py`, `backend/app/core/database.py`, `backend/app/models/agent_task.py`, `backend/app/api/health.py`, `backend/app/api/agents.py`, `backend/app/api/tasks.py`, `backend/app/api/schemas.py`, `backend/requirements.txt`, `backend/Dockerfile`, `frontend/package.json`, `frontend/vite.config.ts`, `frontend/tsconfig.json`, `frontend/tsconfig.node.json`, `frontend/index.html`, `frontend/src/main.tsx`, `frontend/src/App.tsx`, `frontend/src/index.css`, `frontend/src/components/Layout.tsx`, `frontend/src/components/Layout.css`, `frontend/src/pages/Dashboard.tsx`, `frontend/src/pages/Dashboard.css`, `frontend/src/pages/Agents.tsx`, `frontend/src/pages/Agents.css`, `frontend/src/pages/Tasks.tsx`, `frontend/src/pages/Tasks.css`, `frontend/src/api/client.ts`, `frontend/src/api/index.ts`, `frontend/src/types/index.ts`, `frontend/nginx.conf`, `frontend/Dockerfile`, `docker-compose.yml`, `.env.example`, `.gitignore`, `README.md`, `LICENSE`, `CHANGELOG.md`, `portfolio.json`
+Implementation: `backend/app/main.py`, `backend/app/core/config.py`, `backend/app/core/database.py`, `backend/app/models/agent_task.py`, `backend/app/api/health.py`, `backend/app/api/agents.py`, `backend/app/api/tasks.py`, `backend/app/api/schemas.py`, `backend/requirements.txt`, `backend/Dockerfile`, `frontend/package.json`, `frontend/vite.config.ts`, `frontend/tsconfig.json`, `frontend/tsconfig.node.json`, `frontend/index.html`, `frontend/src/main.tsx`, `frontend/src/App.tsx`, `frontend/src/index.css`, `frontend/src/components/Layout.tsx`, `frontend/src/components/Layout.css`, `frontend/src/pages/Dashboard.tsx`, `frontend/src/pages/Dashboard.css`, `frontend/src/pages/Agents.tsx`, `frontend/src/pages/Agents.css`, `frontend/src/pages/Tasks.tsx`, `frontend/src/pages/Tasks.css`, `frontend/src/api/client.ts`, `frontend/src/test/setup.ts`, `frontend/src/App.test.tsx`
 
 Tests: `backend/app/tests/test_api.py`, `frontend/vitest.config.ts`, `frontend/src/test/setup.ts`, `frontend/src/App.test.tsx`
 
@@ -36,6 +36,20 @@ Acceptance:
 Implementation: `backend/app/models/agent_task.py`, `backend/app/api/agents.py`, `backend/app/api/tasks.py`, `backend/app/api/schemas.py`, `frontend/src/pages/Dashboard.tsx`, `frontend/src/pages/Agents.tsx`, `frontend/src/pages/Tasks.tsx`
 
 Tests: `backend/app/tests/test_api.py`
+
+### deprecation-fixes — Fix Pydantic V2 and datetime deprecation warnings
+
+Status: done
+
+Acceptance:
+- Pydantic V2 ConfigDict replaces deprecated class Config
+- protected_namespaces=() suppresses model_ field warnings
+- datetime.utcnow() replaced with timezone-aware datetime.now(timezone.utc)
+- All backend tests pass without deprecation warnings
+
+Implementation: `backend/app/api/schemas.py`, `backend/app/models/agent_task.py`, `backend/app/api/tasks.py`, `frontend/src/test/setup.ts`
+
+Tests: `backend/app/tests/test_api.py`, `frontend/src/App.test.tsx`
 
 ### org-chart-governance — Org Chart & Governance
 

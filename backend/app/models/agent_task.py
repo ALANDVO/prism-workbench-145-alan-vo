@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum as PyEnum
 from typing import Optional
 from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Enum, Boolean, Index
@@ -25,6 +25,10 @@ class TaskStatus(str, PyEnum):
     FAILED = "failed"
 
 
+def utcnow():
+    return datetime.now(timezone.utc)
+
+
 class Agent(Base):
     __tablename__ = "agents"
 
@@ -38,8 +42,8 @@ class Agent(Base):
     budget_limit = Column(Integer, default=0, nullable=False)  # in cents
     budget_used = Column(Integer, default=0, nullable=False)
     parent_id = Column(Integer, ForeignKey("agents.id"), nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=utcnow, nullable=False)
+    updated_at = Column(DateTime, default=utcnow, onupdate=utcnow, nullable=False)
 
     parent = relationship("Agent", remote_side=[id], backref="children")
     assigned_tasks = relationship("Task", back_populates="assignee", foreign_keys="Task.assignee_id")
@@ -61,8 +65,8 @@ class Task(Base):
     parent_task_id = Column(Integer, ForeignKey("tasks.id"), nullable=True)
     budget_limit = Column(Integer, default=0, nullable=False)
     budget_used = Column(Integer, default=0, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=utcnow, nullable=False)
+    updated_at = Column(DateTime, default=utcnow, onupdate=utcnow, nullable=False)
     completed_at = Column(DateTime, nullable=True)
 
     assignee = relationship("Agent", back_populates="assigned_tasks", foreign_keys=[assignee_id])
@@ -82,7 +86,7 @@ class TaskComment(Base):
     task_id = Column(Integer, ForeignKey("tasks.id"), nullable=False)
     agent_id = Column(Integer, ForeignKey("agents.id"), nullable=False)
     content = Column(Text, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=utcnow, nullable=False)
 
     task = relationship("Task", backref="comments")
     agent = relationship("Agent")
