@@ -1,8 +1,17 @@
 # Changelog
 
+## 1.3.0 — work-in-progress checkpoint
+
+Partial code published for continued development. Known issues: STATUS.md.
+
 ## 1.2.0 — work-in-progress checkpoint
 
 Partial code published for continued development. Known issues: STATUS.md.
+
+### Added
+- Budget enforcement for task assignment and agent heartbeat
+- Agent budget limit checking prevents over-assignment
+- Tests for budget enforcement on assignment and heartbeat endpoints
 
 ## 1.1.0 — work-in-progress checkpoint
 

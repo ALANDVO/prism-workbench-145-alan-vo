@@ -225,6 +225,54 @@ class TestTaskAssignment:
         task_id = task_resp.json()["id"]
         response = client.post(f"/tasks/{task_id}/assign/999")
         assert response.status_code == 404
+    def test_assign_task_budget_exceeded_fails(self):
+        agent_resp = client.post("/agents", json={"name": "Worker", "role": "Dev", "budget_limit": 100})
+        agent_id = agent_resp.json()["id"]
+        # Manually set budget_used for testing
+        db = TestingSessionLocal()
+        agent = db.query(Agent).filter(Agent.id == agent_id).first()
+        agent.budget_used = 90
+        db.commit()
+        db.close()
+        
+        task_resp = client.post("/tasks", json={"title": "Expensive Task", "budget_limit": 20})
+        task_id = task_resp.json()["id"]
+
+        response = client.post(f"/tasks/{task_id}/assign/{agent_id}")
+        assert response.status_code == 400
+        assert "budget exceeded" in response.json()["detail"].lower()
+
+    def test_assign_task_budget_ok(self):
+        agent_resp = client.post("/agents", json={"name": "Worker", "role": "Dev", "budget_limit": 100})
+        agent_id = agent_resp.json()["id"]
+        # Manually set budget_used for testing
+        db = TestingSessionLocal()
+        agent = db.query(Agent).filter(Agent.id == agent_id).first()
+        agent.budget_used = 10
+        db.commit()
+        db.close()
+        
+        task_resp = client.post("/tasks", json={"title": "Cheap Task", "budget_limit": 20})
+        task_id = task_resp.json()["id"]
+
+        response = client.post(f"/tasks/{task_id}/assign/{agent_id}")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["assignee_id"] == agent_id
+        assert data["status"] == "assigned"
+
+    def test_assign_task_no_budget_limit_ok(self):
+        # Agent with no budget limit (0) should always be able to accept tasks
+        agent_resp = client.post("/agents", json={"name": "Worker", "role": "Dev", "budget_limit": 0})
+        agent_id = agent_resp.json()["id"]
+        task_resp = client.post("/tasks", json={"title": "Any Task", "budget_limit": 1000})
+        task_id = task_resp.json()["id"]
+
+        response = client.post(f"/tasks/{task_id}/assign/{agent_id}")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["assignee_id"] == agent_id
+        assert data["status"] == "assigned"
 
 
 class TestHeartbeat:
@@ -276,6 +324,64 @@ class TestHeartbeat:
         response = client.post("/tasks/heartbeat", json={"agent_id": agent_id})
         assert response.status_code == 200
         assert response.json()["task"]["id"] == high_id
+    def test_heartbeat_budget_exceeded(self):
+        agent_resp = client.post("/agents", json={"name": "Worker", "role": "Dev", "budget_limit": 100})
+        agent_id = agent_resp.json()["id"]
+        
+        task_resp = client.post("/tasks", json={"title": "Expensive Task", "budget_limit": 20})
+        task_id = task_resp.json()["id"]
+        client.post(f"/tasks/{task_id}/assign/{agent_id}")
+        
+        # Now increase budget_used to exceed limit
+        db = TestingSessionLocal()
+        agent = db.query(Agent).filter(Agent.id == agent_id).first()
+        agent.budget_used = 90
+        db.commit()
+        db.close()
+
+        response = client.post("/tasks/heartbeat", json={"agent_id": agent_id})
+        assert response.status_code == 200
+        data = response.json()
+        assert data["message"] == "budget_exceeded"
+        assert data["task"] is None
+
+    def test_heartbeat_budget_ok(self):
+        agent_resp = client.post("/agents", json={"name": "Worker", "role": "Dev", "budget_limit": 100})
+        agent_id = agent_resp.json()["id"]
+        # Manually set budget_used for testing
+        db = TestingSessionLocal()
+        agent = db.query(Agent).filter(Agent.id == agent_id).first()
+        agent.budget_used = 10
+        db.commit()
+        db.close()
+        
+        task_resp = client.post("/tasks", json={"title": "Cheap Task", "budget_limit": 20})
+        task_id = task_resp.json()["id"]
+        client.post(f"/tasks/{task_id}/assign/{agent_id}")
+
+        response = client.post("/tasks/heartbeat", json={"agent_id": agent_id})
+        assert response.status_code == 200
+        data = response.json()
+        assert data["message"] == "work_assigned"
+        assert data["task"] is not None
+        assert data["task"]["id"] == task_id
+        assert data["task"]["status"] == "in_progress"
+
+    def test_heartbeat_no_budget_limit_ok(self):
+        # Agent with no budget limit (0) should always be able to accept work
+        agent_resp = client.post("/agents", json={"name": "Worker", "role": "Dev", "budget_limit": 0})
+        agent_id = agent_resp.json()["id"]
+        task_resp = client.post("/tasks", json={"title": "Any Task", "budget_limit": 1000})
+        task_id = task_resp.json()["id"]
+        client.post(f"/tasks/{task_id}/assign/{agent_id}")
+
+        response = client.post("/tasks/heartbeat", json={"agent_id": agent_id})
+        assert response.status_code == 200
+        data = response.json()
+        assert data["message"] == "work_assigned"
+        assert data["task"] is not None
+        assert data["task"]["id"] == task_id
+        assert data["task"]["status"] == "in_progress"
 
 
 class TestTaskComments:

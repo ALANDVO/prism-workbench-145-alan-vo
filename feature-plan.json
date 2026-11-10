@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "current_feature": "deprecation-fixes",
+  "current_feature": "budget-enforcement",
   "features": [
     {
       "id": "project-skeleton",
@@ -93,6 +93,29 @@
       "tests": [
         "backend/app/tests/test_api.py",
         "frontend/src/App.test.tsx"
+      ]
+    },
+    {
+      "id": "budget-enforcement",
+      "title": "Budget Enforcement for Task Assignment",
+      "status": "done",
+      "acceptance": [
+        "Agent budget limit prevents task assignment when budget would be exceeded",
+        "Heartbeat endpoint checks budget before assigning work",
+        "Agents with no budget limit (0) can accept unlimited tasks",
+        "Comprehensive tests for assignment and heartbeat budget checks"
+      ],
+      "implementation": [
+        "backend/app/api/tasks.py",
+        "backend/app/tests/test_api.py"
+      ],
+      "tests": [
+        "backend/app/tests/test_api.py::TestTaskAssignment::test_assign_task_budget_exceeded_fails",
+        "backend/app/tests/test_api.py::TestTaskAssignment::test_assign_task_budget_ok",
+        "backend/app/tests/test_api.py::TestTaskAssignment::test_assign_task_no_budget_limit_ok",
+        "backend/app/tests/test_api.py::TestHeartbeat::test_heartbeat_budget_exceeded",
+        "backend/app/tests/test_api.py::TestHeartbeat::test_heartbeat_budget_ok",
+        "backend/app/tests/test_api.py::TestHeartbeat::test_heartbeat_no_budget_limit_ok"
       ]
     },
     {

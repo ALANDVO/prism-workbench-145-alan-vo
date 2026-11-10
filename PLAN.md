@@ -4,7 +4,7 @@ Each round completes one feature or repair. Future items are planned, not implem
 
 ## Current round
 
-deprecation-fixes
+budget-enforcement
 
 ## Roadmap
 
@@ -50,6 +50,20 @@ Acceptance:
 Implementation: `backend/app/api/schemas.py`, `backend/app/models/agent_task.py`, `backend/app/api/tasks.py`, `frontend/src/test/setup.ts`
 
 Tests: `backend/app/tests/test_api.py`, `frontend/src/App.test.tsx`
+
+### budget-enforcement — Budget Enforcement for Task Assignment
+
+Status: done
+
+Acceptance:
+- Agent budget limit prevents task assignment when budget would be exceeded
+- Heartbeat endpoint checks budget before assigning work
+- Agents with no budget limit (0) can accept unlimited tasks
+- Comprehensive tests for assignment and heartbeat budget checks
+
+Implementation: `backend/app/api/tasks.py`, `backend/app/tests/test_api.py`
+
+Tests: `backend/app/tests/test_api.py::TestTaskAssignment::test_assign_task_budget_exceeded_fails`, `backend/app/tests/test_api.py::TestTaskAssignment::test_assign_task_budget_ok`, `backend/app/tests/test_api.py::TestTaskAssignment::test_assign_task_no_budget_limit_ok`, `backend/app/tests/test_api.py::TestHeartbeat::test_heartbeat_budget_exceeded`, `backend/app/tests/test_api.py::TestHeartbeat::test_heartbeat_budget_ok`, `backend/app/tests/test_api.py::TestHeartbeat::test_heartbeat_no_budget_limit_ok`
 
 ### org-chart-governance — Org Chart & Governance
 
