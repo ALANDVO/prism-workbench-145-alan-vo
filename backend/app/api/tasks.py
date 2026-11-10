@@ -86,6 +86,12 @@ def assign_task(task_id: int, agent_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Agent not found")
     if agent.status != AgentStatus.ACTIVE:
         raise HTTPException(status_code=400, detail="Agent is not active")
+    # Budget enforcement: check if agent has enough budget for this task
+    if agent.budget_limit > 0 and agent.budget_used + task.budget_limit > agent.budget_limit:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Agent budget exceeded: limit={agent.budget_limit}, used={agent.budget_used}, task requires={task.budget_limit}"
+        )
     task.assignee_id = agent_id
     task.status = TaskStatus.ASSIGNED
     db.commit()
@@ -108,6 +114,9 @@ def heartbeat(request: HeartbeatRequest, db: Session = Depends(get_db)):
     )
     if not task:
         return HeartbeatResponse(message="no_work")
+    # Budget enforcement: check if agent has enough budget for this task
+    if agent.budget_limit > 0 and agent.budget_used + task.budget_limit > agent.budget_limit:
+        return HeartbeatResponse(message="budget_exceeded")
     task.status = TaskStatus.IN_PROGRESS
     db.commit()
     db.refresh(task)
