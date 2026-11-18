@@ -15,6 +15,7 @@ export default function Layout({ children }: LayoutProps) {
     { path: '/', label: 'Dashboard' },
     { path: '/agents', label: 'Agents' },
     { path: '/tasks', label: 'Tasks' },
+    { path: '/org-chart', label: 'Org Chart' },
   ]
 
   return (
