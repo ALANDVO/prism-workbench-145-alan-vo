@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { agentsApi, tasksApi } from '../api'
 import type { Agent, Task, TaskStatus } from '../types'
+import OrgChart from './components/OrgChart'
 import './Dashboard.css'
 
 export default function Dashboard() {
