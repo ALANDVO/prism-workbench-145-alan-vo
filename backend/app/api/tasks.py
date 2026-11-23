@@ -93,7 +93,63 @@ def assign_task(task_id: int, agent_id: int, db: Session = Depends(get_db)):
             detail=f"Agent budget exceeded: limit={agent.budget_limit}, used={agent.budget_used}, task requires={task.budget_limit}"
         )
     task.assignee_id = agent_id
-    task.status = TaskStatus.ASSIGNED
+    # Governance: if agent has a parent (manager), task goes to in_review for approval
+    if agent.parent_id is not None:
+        task.status = TaskStatus.IN_REVIEW
+    else:
+        task.status = TaskStatus.ASSIGNED
+    db.commit()
+    db.refresh(task)
+    return task
+
+
+@router.post("/{task_id}/approve", response_model=TaskResponse)
+def approve_task(task_id: int, db: Session = Depends(get_db)):
+    """Allow a parent agent to approve a task in in_review status."""
+    task = db.query(Task).filter(Task.id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    if task.status != TaskStatus.IN_REVIEW:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Task is not in in_review status, current status: {task.status}"
+        )
+    # Check that the task is assigned to an agent with a parent
+    agent = db.query(Agent).filter(Agent.id == task.assignee_id).first()
+    if not agent or agent.parent_id is None:
+        raise HTTPException(
+            status_code=400,
+            detail="Only parent agents can approve tasks; this agent has no parent"
+        )
+    # Approve the task
+    task.status = TaskStatus.APPROVED
+    if not task.completed_at:
+        task.completed_at = utcnow()
+    db.commit()
+    db.refresh(task)
+    return task
+
+
+def reject_task(task_id: int, db: Session = Depends(get_db)):
+    """Allow a parent agent to reject a task in in_review status."""
+    task = db.query(Task).filter(Task.id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    if task.status != TaskStatus.IN_REVIEW:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Task is not in in_review status, current status: {task.status}"
+        )
+    # Check that the task is assigned to an agent with a parent
+    agent = db.query(Agent).filter(Agent.id == task.assignee_id).first()
+    if not agent or agent.parent_id is None:
+        raise HTTPException(
+            status_code=400,
+            detail="Only parent agents can reject tasks; this agent has no parent"
+        )
+    # Reject the task - set back to PENDING
+    task.status = TaskStatus.PENDING
+    task.completed_at = None
     db.commit()
     db.refresh(task)
     return task
