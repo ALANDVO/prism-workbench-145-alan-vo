@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.6.0 — work-in-progress checkpoint
+
+Partial code published for continued development. Known issues: STATUS.md.
+
+## [1.5.1] - 2026-11-26
+
+### Added
+- Org chart & governance: hierarchical agent org chart endpoint (`GET /agents/org-chart`) returning parent/child relationships with roles, status, and budget tracking
+- Approval gates for task completion: parent agents can approve/reject tasks in `in_review` status, checking that the assignee has a parent agent
+
+### Changed
+- Moved org chart endpoint from tasks router to agents router to avoid route conflicts with `{task_id}` and `{agent_id}` parametric paths
+- Enhanced `approve_task` and `reject_task` to explicitly validate org chain membership
+
+### Fixed
+- Route ordering conflict: org chart endpoint now registered before `{agent_id}` parametric routes in agents router
+# Changelog
+
 ## 1.5.0 — work-in-progress checkpoint
 
 Partial code published for continued development. Known issues: STATUS.md.
