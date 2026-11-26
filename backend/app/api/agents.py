@@ -37,6 +37,28 @@ def list_agents(
     return query.offset(skip).limit(limit).all()
 
 
+@router.get("/org-chart", response_model=dict)
+def get_org_chart(db: Session = Depends(get_db)):
+    """Return the hierarchical agent org chart."""
+    # Build tree: find all root agents (parent_id is None)
+    from app.models.agent_task import Agent
+    root_agents = db.query(Agent).filter(Agent.parent_id.is_(None)).all()
+
+    def build_node(agent: Agent) -> dict:
+        children = db.query(Agent).filter(Agent.parent_id == agent.id).all()
+        return {
+            "id": agent.id,
+            "name": agent.name,
+            "role": agent.role,
+            "description": agent.description,
+            "status": agent.status,
+            "budget_limit": agent.budget_limit,
+            "budget_used": agent.budget_used,
+            "children": [build_node(child) for child in children],
+        }
+
+    return {"root_agents": [build_node(a) for a in root_agents]}
+
 @router.get("/{agent_id}", response_model=AgentResponse)
 def get_agent(agent_id: int, db: Session = Depends(get_db)):
     agent = db.query(Agent).filter(Agent.id == agent_id).first()
@@ -66,3 +88,4 @@ def delete_agent(agent_id: int, db: Session = Depends(get_db)):
     db.delete(agent)
     db.commit()
     return None
+
